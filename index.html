@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+`   <meta charset="UTF-8" />
+    <title>JS轮播图</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .box{
+            position: relative;
+            width: 800px;
+            height: 500px;
+            margin: 100px auto;
+            overflow: hidden;
+        }
+        .imgs{
+            position:absolute;
+            left: 0;top: 0;
+            width: 600%;
+            vertical-align: top;
+            transition: left .55s;
+        }
+        .imgs li{
+            float: left;
+        }
+        .imgs img{
+            width:800px;
+            height: 500px;
+            vertical-align: top;
+        }
+        .prev,.next{
+            position: absolute;
+            top: 50%;
+            width: 40px;
+            height: 60px;
+            margin-top: -30px;
+            text-align: center;
+            background-color: rgba(0,0,0,.1);
+            display:inline-block;
+        }
+
+        .prev:hover{background-color: rgba(0,0,0,.3);}
+        .next:hover{background-color: rgba(0,0,0,.3);}
+
+        .prev {
+            left: 20px;
+        }
+
+        .next{
+            right: 20px;
+        }
+
+        .prev img,.next img{
+           margin-top: 16px;
+        }
+
+
+
+
+        .dian{
+            position: absolute;
+            left: 317px;
+            bottom: 20px;
+            background-color: hsla(0,0%,100%,.3);
+            /* text-align: center; */
+            padding: 2px 8px;
+            font-size: 0;
+            /* width: 100%; */
+            border-radius:12px;
+        }
+        .dian a{
+            display:inline-block;
+            width:15px;
+            height:15px;
+            border-radius: 50%;
+            box-shadow: 0 0 2px #666;
+            background-color: #fff;
+            margin: 0 5px;
+        }
+        .dian .active{
+            background-color: greenyellow;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <ul class="imgs">
+            <li><img src="images/1.jpg" alt="#"></li>
+            <li><img src="images/2.jpg" alt="#"></li>
+            <li><img src="images/3.jpg" alt="#"></li>
+            <li><img src="images/4.jpg" alt="#"></li>
+            <li><img src="images/5.jpg" alt="#"></li>
+            <li><img src="images/1.jpg" alt="#"></li>
+        </ul>
+        <a href="javascript:;" class="prev"><img src="images/Icon_right.png" alt=""></a>
+        <a href="javascript:;" class="next"><img src="images/Icon_left.png" alt=""></a>
+        <div class="dian">
+            <a href="javascript:;" class="active"></a>
+            <a href="javascript:;"></a>
+            <a href="javascript:;"></a>
+            <a href="javascript:;"></a>
+            <a href="javascript:;"></a>
+        </div>
+    </div>
+
+    <script>
+        var oBox=document.querySelector('.box'),
+            aLi=document.querySelectorAll('.imgs li'),
+            oUl=document.querySelector('.imgs'),
+            oNext=document.querySelector('.next'),
+            aLink=document.querySelectorAll('.dian a'),
+            oPrev=document.querySelector('.prev'),
+            oNext=document.querySelector('.next');
+        var w=oUl.children[0].offsetWidth;
+        var temp = 0;
+        var iNow = 0;
+
+        //鼠标移动到圆圈上时切换图片
+        for(var i=0,len=aLink.length;i<len;i++){
+            aLink[i].index = i;
+            aLink[i].onmouseover = function(){
+               temp = this.index;
+               tab();
+            }
+        }
+
+        function tab(){
+            for(var i=0,len=aLink.length;i<len;i++){
+                 aLink[i].className = '';
+               }
+               aLink[temp].className='active';
+               oUl.style.left = -temp * w + 'px';
+        }
+
+        //自动播放且鼠标在图片上时停止自动播放
+        var t = null;
+        function autoplay(){
+            t=setInterval(function(){
+                temp++;
+                if(temp == aLink.length){
+                    temp=0;
+                }
+                tab();
+            },3000);
+        }
+
+        autoplay();
+
+        oBox.onmouseover = function(){
+            clearInterval(t);
+            oNext.style.display = 'block';
+            oPrev.style.display = 'block';
+        }
+
+
+        oBox.onmouseout = function(){
+            autoplay();
+            oNext.style.display = 'none';
+            oPrev.style.display = 'none';
+        }
+
+
+
+        //点击时切换到下一张
+        oNext.onclick = function(){
+            iNow++;
+            console.log(iNow);
+
+            if(iNow == aLi.length){
+                oUl.style.left = 0;
+                iNow = 1;
+                oUl.style.left= -w*iNow + 'px';
+            }
+            oUl.style.left= -w*iNow + 'px';
+            for(var i=0,len=aLink.length;i<len;i++){
+                aLink[i].className = '';
+            }
+            if(iNow == aLi.length-1){
+                aLink[0].className ='active';
+            }
+            else{
+                aLink[iNow].className = "active";
+            }
+        }
+        //点击时切换到上一张
+        oPrev.onclick = function(){
+            iNow--;
+            if(iNow == -1){
+                //为了算最后一张的位置
+                iNow = aLi.length - 1;
+                oUl.style.left = -w*iNow + 'px';
+                iNow = aLi.length - 2;
+            }
+            oUl.style.left=-iNow*w + 'px';
+
+            for(var i=0,len=aLink.length;i<len;i++){
+                aLink[i].className = '';
+            }
+
+            aLink[iNow].className = "active";
+        }
+
+    </script>
+
+
+</body>
+
+</html>
